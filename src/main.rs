@@ -1,34 +1,35 @@
-extern crate glutin_window;
-extern crate graphics;
-extern crate opengl_graphics;
-extern crate piston;
-use opengl_graphics::{GlGraphics, OpenGL};
+use rand;
+use piston_window::*;
+use piston_window::types::Color;
 
-extern crate rand;
-
-use piston::window::WindowSettings;
-use piston::event_loop::*;
-use piston::input::*;
-use glutin_window::GlutinWindow;
-
+mod entities;
 mod game;
+mod util;
 
 fn main() {
-    let opengl = OpenGL::V3_2;
+  let (width, height) = (20, 20);
 
-    const COLS: u32 = 30;
-    const ROWS: u32 = 20;
-    const SQUARE_WIDTH: u32 = 20;
+  let mut window: PistonWindow = WindowSettings::new(
+    "Rust Snake Game",
+    [util::to_coord_u32(width), util::to_coord_u32(height)],
+  ).exit_on_esc(true)
+   .build()
+   .unwrap();
 
-    let WIDTH = COLS * SQUARE_WIDTH;
-    let HEIGHT = ROWS * SQUARE_WIDTH;
+  let mut game = game::Game::new(width, height);
 
-    let mut window: GlutinWindow = WindowSettings::new("🐍 Rust Snake", [WIDTH, HEIGHT])
-      .opengl(opengl)
-      .exit_on_esc(true)
-      .build()
-      .unwrap();
+  while let Some(event) = window.next() {
+    if let Some(Button::Keyboard(key)) = event.press_args() {
+      game.handle_key_pressed(key);
+    }
 
-    let mut game = game::Game::new(opengl, COLS, ROWS, SQUARE_WIDTH);
-    game.start(opengl, &mut window);
+    window.draw_2d(&event, |ctx, gph, _d| {
+      clear(util::GRAY, gph);
+      game.draw(&ctx, gph);
+    });
+
+    event.update(|arg| {
+      game.update(arg.dt)
+    });
+  }
 }
