@@ -92,7 +92,7 @@ impl Game {
       self.add_food();
     }
 
-    if !self.waiting_time > MOVING_PERIOD {
+    if self.waiting_time > MOVING_PERIOD {
       self.update_snake(None);
     }
   }
@@ -133,5 +133,24 @@ impl Game {
 
     self.food_position = (new_x, new_y);
     self.food_exists = true;
+  }
+
+  fn update_snake(&mut self, dir: Option<Direction>) {
+    if self.is_snake_alive(dir) {
+      self.snake.handle_move(dir);
+      self.check_eating();
+    } else {
+      self.game_over = true;
+    }
+
+    self.waiting_time = 0.0;
+  }
+
+  fn restart(&mut self) {
+    self.snake = Snake::new(2, 2);
+    self.waiting_time = 0.0;
+    self.food_exists = true;
+    self.food_position = (6, 4);
+    self.game_over = false;
   }
 }

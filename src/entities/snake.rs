@@ -47,7 +47,7 @@ impl Snake {
     self.body.front().unwrap().get_coords()
   }
 
-  fn handle_move(&mut self, dir: Option<Direction>) {
+  pub fn handle_move(&mut self, dir: Option<Direction>) {
     match dir {
       Some(next_direction) => self.direction = next_direction,
       None => ()
