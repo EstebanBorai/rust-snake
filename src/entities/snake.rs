@@ -1,9 +1,10 @@
-use crate::util::{
-    draw_block, Block, BlockCoordinates, BlockDirection, Coords2D, Direction, GREEN,
-};
 use piston_window::types::Color;
 use piston_window::{Context, G2d};
 use std::collections::LinkedList;
+
+use crate::util::{
+    draw_block, Block, BlockCoordinates, BlockDirection, Coords2D, Direction, GREEN,
+};
 
 type SnakeBody = LinkedList<Block>;
 
@@ -42,9 +43,8 @@ impl Snake {
     }
 
     pub fn handle_move(&mut self, dir: Option<Direction>) {
-        match dir {
-            Some(next_direction) => self.direction = next_direction,
-            None => (),
+        if let Some(next_direction) = dir {
+            self.direction = next_direction;
         }
 
         let current_coords: BlockCoordinates = self.get_head_position();
@@ -70,10 +70,9 @@ impl Snake {
 
         let mut moving_dir = self.direction;
 
-        match dir {
-            Some(d) => moving_dir = d,
-            None => {}
-        };
+        if let Some(d) = dir {
+            moving_dir = d
+        }
 
         match moving_dir {
             Direction::Up => current_coords.calc_direction(&Direction::Up),
@@ -106,6 +105,6 @@ impl Snake {
             }
         }
 
-        return false;
+        false
     }
 }

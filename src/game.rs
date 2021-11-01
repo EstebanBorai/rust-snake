@@ -1,10 +1,9 @@
-use crate::entities::Snake;
-use crate::util::{
-    draw_block, draw_rectangle, BlockCoordinates, Coords2D, Direction, BLACK, BLUE, RED,
-};
 use piston_window::types::Color;
 use piston_window::*;
 use rand::{thread_rng, Rng};
+
+use crate::entities::Snake;
+use crate::util::{draw_block, draw_rectangle, BlockCoordinates, Coords2D, Direction, BLACK, RED};
 
 const FOOD_COLOR: Color = RED;
 const BORDER_COLOR: Color = BLACK;

@@ -1,6 +1,4 @@
-use piston_window::types::Color;
 use piston_window::*;
-use rand;
 
 mod entities;
 mod game;
