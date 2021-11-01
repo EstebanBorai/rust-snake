@@ -42,18 +42,20 @@ impl Game {
         }
 
         let dir = match key {
-            Key::Up => Some(Direction::Up),
-            Key::Down => Some(Direction::Down),
-            Key::Left => Some(Direction::Left),
-            Key::Right => Some(Direction::Right),
+            Key::Up | Key::W => Some(Direction::Up),
+            Key::Down | Key::S => Some(Direction::Down),
+            Key::Left | Key::A => Some(Direction::Left),
+            Key::Right | Key::D => Some(Direction::Right),
             _ => None,
         };
 
-        if dir.unwrap() == self.snake.get_head_direction().opposite() {
-            return;
-        }
+        if let Some(key) = dir {
+            if key == self.snake.get_head_direction().opposite() {
+                return;
+            }
 
-        self.update_snake(dir);
+            self.update_snake(dir);
+        }
     }
 
     pub fn draw(&self, con: &Context, g: &mut G2d) {
