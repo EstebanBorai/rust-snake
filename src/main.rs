@@ -1,6 +1,10 @@
-use macroquad::prelude::*;
+mod entities;
+mod game;
+mod utils;
 
 #[macroquad::main("Snake")]
 async fn main() {
-    println!("Hello World!");
+    let mut game = game::Game::new();
+
+    game.start().await;
 }
