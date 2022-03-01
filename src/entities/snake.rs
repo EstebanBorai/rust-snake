@@ -21,4 +21,8 @@ impl Snake {
             tail: None,
         }
     }
+
+    pub fn update_direction(&mut self, dir: Direction) {
+        self.direction = dir;
+    }
 }
