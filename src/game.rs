@@ -3,6 +3,8 @@ use macroquad::prelude::*;
 use crate::entities::Snake;
 use crate::utils::Direction;
 
+pub const BLOCK_SIZE: f32 = 16.;
+
 pub enum State {
     Playing,
     GameOver,
@@ -10,27 +12,31 @@ pub enum State {
 
 pub struct Game {
     score: i32,
-    last_update: f64,
-    screen_size: f32,
+    screen_height: f32,
+    screen_width: f32,
     state: State,
     snake: Snake,
 }
 
 impl Game {
     pub fn new() -> Self {
-        let screen_size = screen_width().min(screen_height());
+        let screen_height = screen_height();
+        let screen_width = screen_width();
+        let snake = Snake::new(0., 0., screen_width, screen_height);
 
         Self {
             score: 0,
-            last_update: 0.,
-            screen_size,
+            screen_height,
+            screen_width,
             state: State::Playing,
-            snake: Snake::new(0, 0),
+            snake,
         }
     }
 
     pub async fn start(&mut self) {
         while matches!(self.state, State::Playing) {
+            self.screen_height = screen_height();
+            self.screen_width = screen_width();
             self.handle_keyboard_events();
             clear_background(BLACK);
 
@@ -47,7 +53,13 @@ impl Game {
             for block in self.snake.blocks() {
                 let coords = block.get_coords();
 
-                draw_rectangle(coords.x as f32, coords.y as f32, 16., 16., GREEN);
+                draw_rectangle(
+                    coords.x as f32,
+                    coords.y as f32,
+                    BLOCK_SIZE,
+                    BLOCK_SIZE,
+                    GREEN,
+                );
             }
 
             next_frame().await;

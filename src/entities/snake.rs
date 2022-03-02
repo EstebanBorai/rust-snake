@@ -9,11 +9,10 @@ pub struct Snake {
 }
 
 impl Snake {
-    pub fn new(x: i32, y: i32) -> Self {
+    pub fn new(x: f32, y: f32, screen_width: f32, screen_height: f32) -> Self {
         let mut body: LinkedList<Block> = LinkedList::new();
 
-        body.push_back(Block::new(x + 2, y));
-        body.push_back(Block::new(x, y));
+        body.push_back(Block::new(screen_width / 2., screen_height / 2.));
 
         Self {
             direction: Direction::Up,
@@ -24,7 +23,7 @@ impl Snake {
 
     pub fn update_direction(&mut self, dir: Direction) {
         let head_block = self.body.front().unwrap();
-        let next_head_block = head_block.replicate_with_direction(&dir);
+        let next_head_block = head_block.replicate_with_direction(&dir, 4.);
 
         self.body.push_front(next_head_block);
 
@@ -32,6 +31,12 @@ impl Snake {
 
         self.tail = removed;
         self.direction = dir;
+    }
+
+    pub fn eat(&mut self) {
+        let tail = self.tail.clone().unwrap();
+
+        self.body.push_back(tail);
     }
 
     pub fn blocks(&self) -> LinkedList<Block> {

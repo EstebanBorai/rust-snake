@@ -6,7 +6,7 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn new(x: i32, y: i32) -> Block {
+    pub fn new(x: f32, y: f32) -> Block {
         Block {
             coords: Coords::new(x, y),
         }
@@ -16,12 +16,12 @@ impl Block {
         self.coords
     }
 
-    pub fn replicate_with_direction(&self, dir: &Direction) -> Self {
+    pub fn replicate_with_direction(&self, dir: &Direction, ammount: f32) -> Self {
         let Coords { x, y } = match dir {
-            Direction::Up => self.coords.replicate_x(self.coords.get_y() - 1),
-            Direction::Down => self.coords.replicate_x(self.coords.get_y() + 1),
-            Direction::Right => self.coords.replicate_y(self.coords.get_x() + 1),
-            Direction::Left => self.coords.replicate_y(self.coords.get_x() - 1),
+            Direction::Up => self.coords.replicate_x(self.coords.get_y() - ammount),
+            Direction::Down => self.coords.replicate_x(self.coords.get_y() + ammount),
+            Direction::Right => self.coords.replicate_y(self.coords.get_x() + ammount),
+            Direction::Left => self.coords.replicate_y(self.coords.get_x() - ammount),
         };
 
         Block::new(x, y)
