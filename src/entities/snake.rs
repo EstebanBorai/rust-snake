@@ -1,6 +1,6 @@
 use std::collections::LinkedList;
 
-use crate::utils::{Block, Coords, Direction};
+use crate::utils::{Block, Direction};
 
 pub struct Snake {
     direction: Direction,
@@ -9,7 +9,7 @@ pub struct Snake {
 }
 
 impl Snake {
-    pub fn new(x: f32, y: f32, screen_width: f32, screen_height: f32) -> Self {
+    pub fn new(screen_width: f32, screen_height: f32) -> Self {
         let mut body: LinkedList<Block> = LinkedList::new();
 
         body.push_back(Block::new(screen_width / 2., screen_height / 2.));
@@ -22,7 +22,7 @@ impl Snake {
     }
 
     pub fn update_direction(&mut self, dir: Direction) {
-        let head_block = self.body.front().unwrap();
+        let head_block = self.get_head_block();
         let next_head_block = head_block.replicate_with_direction(&dir, 4.);
 
         self.body.push_front(next_head_block);
@@ -39,11 +39,11 @@ impl Snake {
         self.body.push_back(tail);
     }
 
-    pub fn blocks(&self) -> LinkedList<Block> {
-        self.body.clone()
+    pub fn get_head_block(&self) -> Block {
+        self.body.front().unwrap().to_owned()
     }
 
-    fn head_coords(&self) -> Coords {
-        self.body.front().unwrap().get_coords()
+    pub fn blocks(&self) -> LinkedList<Block> {
+        self.body.clone()
     }
 }

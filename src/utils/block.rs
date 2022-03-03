@@ -27,3 +27,13 @@ impl Block {
         Block::new(x, y)
     }
 }
+
+impl Coordinates for Block {
+    fn get_x(&self) -> f32 {
+        self.coords.x
+    }
+
+    fn get_y(&self) -> f32 {
+        self.coords.y
+    }
+}

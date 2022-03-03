@@ -1,3 +1,5 @@
+use rand::Rng;
+
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Coords {
     pub(crate) x: f32,
@@ -15,6 +17,15 @@ impl Coords {
 
     pub fn replicate_y(&self, x: f32) -> Self {
         Coords { x, y: self.y }
+    }
+
+    pub fn random(max_x: f32, max_y: f32) -> Self {
+        let mut rng = rand::thread_rng();
+
+        let x = rng.gen_range(0_f32..max_x);
+        let y = rng.gen_range(0_f32..max_y);
+
+        Self { x, y }
     }
 }
 

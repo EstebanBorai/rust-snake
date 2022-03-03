@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 
-use crate::entities::Snake;
-use crate::utils::Direction;
+use crate::entities::{Food, Snake};
+use crate::utils::{Coordinates, Direction};
 
 pub const BLOCK_SIZE: f32 = 16.;
 
@@ -11,6 +11,7 @@ pub enum State {
 }
 
 pub struct Game {
+    food: Food,
     score: i32,
     screen_height: f32,
     screen_width: f32,
@@ -22,9 +23,11 @@ impl Game {
     pub fn new() -> Self {
         let screen_height = screen_height();
         let screen_width = screen_width();
-        let snake = Snake::new(0., 0., screen_width, screen_height);
+        let food = Food::new(screen_width, screen_height);
+        let snake = Snake::new(screen_width, screen_height);
 
         Self {
+            food,
             score: 0,
             screen_height,
             screen_width,
@@ -43,26 +46,43 @@ impl Game {
             // Draw Score
             draw_text(
                 format!("SCORE: {}", self.score).as_str(),
-                10.,
-                10.,
+                24.,
+                24.,
                 24.,
                 DARKGRAY,
+            );
+
+            // Draw the food
+            draw_rectangle(
+                self.food.get_x(),
+                self.food.get_y(),
+                BLOCK_SIZE,
+                BLOCK_SIZE,
+                RED,
             );
 
             // Draw the snake
             for block in self.snake.blocks() {
                 let coords = block.get_coords();
 
-                draw_rectangle(
-                    coords.x as f32,
-                    coords.y as f32,
-                    BLOCK_SIZE,
-                    BLOCK_SIZE,
-                    GREEN,
-                );
+                draw_rectangle(coords.x, coords.y, BLOCK_SIZE, BLOCK_SIZE, GREEN);
             }
 
+            self.found_food();
             next_frame().await;
+        }
+    }
+
+    fn found_food(&mut self) {
+        let head = self.snake.get_head_block();
+        let error = BLOCK_SIZE / 2.;
+
+        if (head.get_x() - self.food.get_x()).abs() <= error
+            && (head.get_y() - self.food.get_y()).abs() <= error
+        {
+            self.snake.eat();
+            self.food.eat();
+            self.score += 1;
         }
     }
 
