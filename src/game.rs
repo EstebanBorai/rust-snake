@@ -41,6 +41,7 @@ impl Game {
             self.screen_height = screen_height();
             self.screen_width = screen_width();
             self.handle_keyboard_events();
+
             clear_background(BLACK);
 
             // Draw Score
@@ -75,7 +76,7 @@ impl Game {
 
     fn found_food(&mut self) {
         let head = self.snake.get_head_block();
-        let error = BLOCK_SIZE / 2.;
+        let error = BLOCK_SIZE / 0.95;
 
         if (head.get_x() - self.food.get_x()).abs() <= error
             && (head.get_y() - self.food.get_y()).abs() <= error
@@ -93,26 +94,32 @@ impl Game {
 
         if is_key_down(KeyCode::Up) || is_key_down(KeyCode::W) {
             self.snake.update_direction(Direction::Up);
+            self.snake.forward();
             dbg!("Keydown: Up");
             return;
         }
 
         if is_key_down(KeyCode::Down) || is_key_down(KeyCode::S) {
             self.snake.update_direction(Direction::Down);
+            self.snake.forward();
             dbg!("Keydown: Down");
             return;
         }
 
         if is_key_down(KeyCode::Right) || is_key_down(KeyCode::D) {
             self.snake.update_direction(Direction::Right);
+            self.snake.forward();
             dbg!("Keydown: Right");
             return;
         }
 
         if is_key_down(KeyCode::Left) || is_key_down(KeyCode::A) {
             self.snake.update_direction(Direction::Left);
+            self.snake.forward();
             dbg!("Keydown: Left");
             return;
         }
+
+        self.snake.forward();
     }
 }

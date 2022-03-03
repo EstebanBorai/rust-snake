@@ -1,11 +1,15 @@
 use std::collections::LinkedList;
 
-use crate::utils::{Block, Direction};
+use crate::{
+    game::BLOCK_SIZE,
+    utils::{Block, Direction},
+};
 
 pub struct Snake {
     direction: Direction,
     body: LinkedList<Block>,
     tail: Option<Block>,
+    speed: f32,
 }
 
 impl Snake {
@@ -13,23 +17,17 @@ impl Snake {
         let mut body: LinkedList<Block> = LinkedList::new();
 
         body.push_back(Block::new(screen_width / 2., screen_height / 2.));
+        body.push_back(Block::new(screen_width, screen_height));
 
         Self {
             direction: Direction::Up,
             body,
             tail: None,
+            speed: 0.25,
         }
     }
 
     pub fn update_direction(&mut self, dir: Direction) {
-        let head_block = self.get_head_block();
-        let next_head_block = head_block.replicate_with_direction(&dir, 4.);
-
-        self.body.push_front(next_head_block);
-
-        let removed = self.body.pop_back();
-
-        self.tail = removed;
         self.direction = dir;
     }
 
@@ -45,5 +43,21 @@ impl Snake {
 
     pub fn blocks(&self) -> LinkedList<Block> {
         self.body.clone()
+    }
+
+    pub fn speed(&self) -> f32 {
+        self.speed
+    }
+
+    pub fn forward(&mut self) {
+        let head_block = self.get_head_block();
+        let next_head_block =
+            head_block.replicate_with_direction(&self.direction, BLOCK_SIZE * self.speed);
+
+        self.body.push_front(next_head_block);
+
+        let removed = self.body.pop_back();
+
+        self.tail = removed;
     }
 }
