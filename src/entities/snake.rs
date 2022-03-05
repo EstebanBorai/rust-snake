@@ -17,13 +17,12 @@ impl Snake {
         let mut body: LinkedList<Block> = LinkedList::new();
 
         body.push_back(Block::new(screen_width / 2., screen_height / 2.));
-        body.push_back(Block::new(screen_width, screen_height));
 
         Self {
             direction: Direction::Up,
             body,
             tail: None,
-            speed: 0.25,
+            speed: 0.05,
         }
     }
 
@@ -51,8 +50,7 @@ impl Snake {
 
     pub fn forward(&mut self) {
         let head_block = self.get_head_block();
-        let next_head_block =
-            head_block.replicate_with_direction(&self.direction, BLOCK_SIZE * self.speed);
+        let next_head_block = head_block.replicate_with_direction(&self.direction, BLOCK_SIZE);
 
         self.body.push_front(next_head_block);
 

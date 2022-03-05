@@ -17,6 +17,7 @@ pub struct Game {
     screen_width: f32,
     state: State,
     snake: Snake,
+    last_update: f64,
 }
 
 impl Game {
@@ -31,16 +32,20 @@ impl Game {
             score: 0,
             screen_height,
             screen_width,
-            state: State::GameOver,
+            state: State::Playing,
             snake,
+            last_update: get_time(),
         }
     }
 
     pub async fn start(&mut self) {
         while matches!(self.state, State::Playing) {
-            self.screen_height = screen_height();
-            self.screen_width = screen_width();
             self.handle_keyboard_events();
+
+            if (get_time() - self.last_update) > self.snake.speed() as f64 {
+                self.last_update = get_time();
+                self.snake.forward();
+            }
 
             clear_background(BLACK);
 
@@ -114,32 +119,22 @@ impl Game {
 
         if is_key_down(KeyCode::Up) || is_key_down(KeyCode::W) {
             self.snake.update_direction(Direction::Up);
-            self.snake.forward();
-            dbg!("Keydown: Up");
             return;
         }
 
         if is_key_down(KeyCode::Down) || is_key_down(KeyCode::S) {
             self.snake.update_direction(Direction::Down);
-            self.snake.forward();
-            dbg!("Keydown: Down");
             return;
         }
 
         if is_key_down(KeyCode::Right) || is_key_down(KeyCode::D) {
             self.snake.update_direction(Direction::Right);
-            self.snake.forward();
-            dbg!("Keydown: Right");
             return;
         }
 
         if is_key_down(KeyCode::Left) || is_key_down(KeyCode::A) {
             self.snake.update_direction(Direction::Left);
-            self.snake.forward();
-            dbg!("Keydown: Left");
             return;
         }
-
-        self.snake.forward();
     }
 }
