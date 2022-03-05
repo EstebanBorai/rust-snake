@@ -140,8 +140,8 @@ impl Game {
         }
 
         if (snake_head_x - food_x).abs() <= error && (snake_head_y - food_y).abs() <= error {
-            self.snake.eat();
-            self.food.eat();
+            self.snake.grow();
+            self.food.random_respawn();
             self.score += 1;
         }
     }

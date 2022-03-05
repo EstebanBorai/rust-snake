@@ -30,7 +30,7 @@ impl Snake {
         self.direction = dir;
     }
 
-    pub fn eat(&mut self) {
+    pub fn grow(&mut self) {
         let tail = self.tail.clone().unwrap();
 
         self.body.push_back(tail);
