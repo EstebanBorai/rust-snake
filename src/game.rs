@@ -31,7 +31,7 @@ impl Game {
             score: 0,
             screen_height,
             screen_width,
-            state: State::Playing,
+            state: State::GameOver,
             snake,
         }
     }
@@ -50,7 +50,7 @@ impl Game {
                 24.,
                 24.,
                 24.,
-                DARKGRAY,
+                WHITE,
             );
 
             // Draw the food
@@ -70,6 +70,26 @@ impl Game {
             }
 
             self.found_food();
+            next_frame().await;
+        }
+
+        while matches!(self.state, State::GameOver) {
+            if is_key_down(KeyCode::Escape) {
+                panic!("Exit gracefully please!");
+            }
+
+            let font_size = 32;
+            let text = format!("Game Over! Your score was: {}", self.score);
+            let text_dimensions = measure_text(text.as_str(), None, font_size, 1.);
+
+            // Draw Score
+            draw_text(
+                text.as_str(),
+                (self.screen_width - text_dimensions.width) / 2.,
+                self.screen_height / 2.,
+                font_size as f32,
+                WHITE,
+            );
             next_frame().await;
         }
     }
