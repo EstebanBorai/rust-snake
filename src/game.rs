@@ -45,6 +45,7 @@ impl Game {
             if (get_time() - self.last_update) > self.snake.speed() as f64 {
                 self.last_update = get_time();
                 self.snake.forward();
+                self.check_collision();
             }
 
             clear_background(BLACK);
@@ -74,7 +75,6 @@ impl Game {
                 draw_rectangle(coords.x, coords.y, BLOCK_SIZE, BLOCK_SIZE, GREEN);
             }
 
-            self.found_food();
             next_frame().await;
         }
 
@@ -96,19 +96,6 @@ impl Game {
                 WHITE,
             );
             next_frame().await;
-        }
-    }
-
-    fn found_food(&mut self) {
-        let head = self.snake.get_head_block();
-        let error = BLOCK_SIZE / 0.95;
-
-        if (head.get_x() - self.food.get_x()).abs() <= error
-            && (head.get_y() - self.food.get_y()).abs() <= error
-        {
-            self.snake.eat();
-            self.food.eat();
-            self.score += 1;
         }
     }
 
@@ -135,6 +122,27 @@ impl Game {
         if is_key_down(KeyCode::Left) || is_key_down(KeyCode::A) {
             self.snake.update_direction(Direction::Left);
             return;
+        }
+    }
+
+    fn check_collision(&mut self) {
+        let error = BLOCK_SIZE / 0.95;
+        let snake_head_coords = self.snake.get_head_block();
+        let (snake_head_x, snake_head_y) = (snake_head_coords.get_x(), snake_head_coords.get_y());
+        let (food_x, food_y) = (self.food.get_x(), self.food.get_y());
+
+        if snake_head_x <= 16.
+            || snake_head_x >= self.screen_width - 16.
+            || snake_head_y <= 16.
+            || snake_head_y >= self.screen_height - 16.
+        {
+            self.state = State::GameOver;
+        }
+
+        if (snake_head_x - food_x).abs() <= error && (snake_head_y - food_y).abs() <= error {
+            self.snake.eat();
+            self.food.eat();
+            self.score += 1;
         }
     }
 }
