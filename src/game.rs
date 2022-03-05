@@ -39,62 +39,80 @@ impl Game {
     }
 
     pub async fn start(&mut self) {
-        while matches!(self.state, State::Playing) {
-            self.handle_keyboard_events();
+        loop {
+            match self.state {
+                State::Playing => {
+                    self.handle_keyboard_events();
 
-            if (get_time() - self.last_update) > self.snake.speed() as f64 {
-                self.last_update = get_time();
-                self.snake.forward();
-                self.check_collision();
+                    if (get_time() - self.last_update) > self.snake.speed() as f64 {
+                        self.last_update = get_time();
+                        self.snake.forward();
+                        self.check_collision();
+                    }
+
+                    clear_background(BLACK);
+
+                    // Draw Score
+                    draw_text(
+                        format!("SCORE: {}", self.score).as_str(),
+                        24.,
+                        24.,
+                        24.,
+                        WHITE,
+                    );
+
+                    // Draw the food
+                    draw_rectangle(
+                        self.food.get_x(),
+                        self.food.get_y(),
+                        BLOCK_SIZE,
+                        BLOCK_SIZE,
+                        RED,
+                    );
+
+                    // Draw the snake
+                    for block in self.snake.blocks() {
+                        let coords = block.get_coords();
+
+                        draw_rectangle(coords.x, coords.y, BLOCK_SIZE, BLOCK_SIZE, GREEN);
+                    }
+                }
+                State::GameOver => {
+                    if is_key_down(KeyCode::Escape) {
+                        panic!("Exit gracefully please!");
+                    }
+
+                    if is_key_down(KeyCode::Space) {
+                        self.play_again();
+                    }
+
+                    let font_size = 32;
+                    let text = format!("Game Over! Your score was: {}", self.score);
+                    let text_dimensions = measure_text(text.as_str(), None, font_size, 1.);
+
+                    // Draw Score
+                    draw_text(
+                        text.as_str(),
+                        (self.screen_width - text_dimensions.width) / 2.,
+                        self.screen_height / 2.,
+                        font_size as f32,
+                        WHITE,
+                    );
+
+                    let text = "Press [SPACE] to play again";
+                    let text_dimensions = measure_text(text, None, font_size, 1.);
+
+                    // Draw Play Again
+                    draw_text(
+                        text,
+                        (self.screen_width - text_dimensions.width) / 2.,
+                        (self.screen_height / 2.) + text_dimensions.height + 5.,
+                        font_size as f32,
+                        WHITE,
+                    );
+                }
             }
 
-            clear_background(BLACK);
-
-            // Draw Score
-            draw_text(
-                format!("SCORE: {}", self.score).as_str(),
-                24.,
-                24.,
-                24.,
-                WHITE,
-            );
-
-            // Draw the food
-            draw_rectangle(
-                self.food.get_x(),
-                self.food.get_y(),
-                BLOCK_SIZE,
-                BLOCK_SIZE,
-                RED,
-            );
-
-            // Draw the snake
-            for block in self.snake.blocks() {
-                let coords = block.get_coords();
-
-                draw_rectangle(coords.x, coords.y, BLOCK_SIZE, BLOCK_SIZE, GREEN);
-            }
-
-            next_frame().await;
-        }
-
-        while matches!(self.state, State::GameOver) {
-            if is_key_down(KeyCode::Escape) {
-                panic!("Exit gracefully please!");
-            }
-
-            let font_size = 32;
-            let text = format!("Game Over! Your score was: {}", self.score);
-            let text_dimensions = measure_text(text.as_str(), None, font_size, 1.);
-
-            // Draw Score
-            draw_text(
-                text.as_str(),
-                (self.screen_width - text_dimensions.width) / 2.,
-                self.screen_height / 2.,
-                font_size as f32,
-                WHITE,
-            );
             next_frame().await;
         }
     }
@@ -144,5 +162,13 @@ impl Game {
             self.food.random_respawn();
             self.score += 1;
         }
+    }
+
+    fn play_again(&mut self) {
+        self.score = 0;
+        self.food = Food::new(self.screen_width, self.screen_height);
+        self.snake = Snake::new(self.screen_width, self.screen_height);
+        self.last_update = get_time();
+        self.state = State::Playing;
     }
 }

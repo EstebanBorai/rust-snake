@@ -27,7 +27,7 @@ impl Snake {
     }
 
     pub fn update_direction(&mut self, dir: Direction) {
-        if dir == Direction::Down && self.direction == Direction::Up {
+        if dir == self.direction.opposite() {
             return;
         }
 
