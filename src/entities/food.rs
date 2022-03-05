@@ -18,7 +18,7 @@ impl Food {
     }
 
     pub fn eat(&mut self) {
-        self.coords = Coords::random(self.screen_width, self.screen_height);
+        self.coords = Coords::random(self.screen_width - 16., self.screen_height - 16.);
     }
 }
 

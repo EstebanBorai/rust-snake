@@ -22,8 +22,8 @@ impl Coords {
     pub fn random(max_x: f32, max_y: f32) -> Self {
         let mut rng = rand::thread_rng();
 
-        let x = rng.gen_range(0_f32..max_x);
-        let y = rng.gen_range(0_f32..max_y);
+        let x = rng.gen_range(16_f32..max_x);
+        let y = rng.gen_range(16_f32..max_y);
 
         Self { x, y }
     }
