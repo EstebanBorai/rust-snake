@@ -5,3 +5,18 @@
     🐍 Snake Game made with Rust's Macroquad crate
   </small>
 </div>
+
+## Demo
+
+<div align="center">
+  <img src="./docs/demo.gif" alt="Snake Game Demo" width="400" />
+</div>
+
+## Controls
+
+You can use either Arrow Keys or WASD to change snake direction.
+
+## Contributions
+
+All kind of contributions are welcome, feel free to open a Pull Request or
+Issue if you find it helpful.
